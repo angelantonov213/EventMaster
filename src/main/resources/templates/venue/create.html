@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Create Venue</title>
+</head>
+<body>
+<h1>Create Venue</h1>
+<form th:action="@{/venues/create}" method="post" th:object="${createVenueModel}">
+    <label>Name</label>
+    <input type="text" id="name" name="name"/>
+    <label>Description</label>
+    <input type="text" id="description" name="description" />
+    <label>Address</label>
+    <input type="text" id="address" name="address" />
+    <label>Capacity</label>
+    <input type="text" id="capacity" name="capacity" />
+    <label>Admins</label>
+    <select th:field="*{admins}" name="admins" multiple="multiple">
+        <option th:each="user : ${adminUsers}"
+                th:value="${{user.id}}"
+                th:text="${{user.email}}" />
+    </select>
+    <br />
+
+    <button type="submit">Create</button>
+</form>
+</body>
+</html>
