@@ -2,10 +2,13 @@ package com.angelantonov.eventmaster.services.services.implementations;
 
 import com.angelantonov.eventmaster.data.models.User;
 import com.angelantonov.eventmaster.data.repositories.UsersRepository;
+import com.angelantonov.eventmaster.helpers.RandomStringUtil;
 import com.angelantonov.eventmaster.services.model.*;
 import com.angelantonov.eventmaster.services.services.AuthService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -28,7 +31,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void refreshPasswordForUser(RefreshPasswordForUserServiceModel model) {
+        Optional<User> user = usersRepository.findByEmail(model.getEmail());
 
+        if (user.isPresent()) {
+            String newPassword = RandomStringUtil.generateRandomString(10);
+            User foundUser = user.get();
+            foundUser.setPassword(newPassword);
+            usersRepository.save(foundUser);
+
+            System.out.println("new password is: " + newPassword);
+        }
     }
 
     @Override
@@ -43,6 +55,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void setRoleForUser(SetRoleForServiceModel model) {
-
+        model.getUser().setRoles(model.getRoles());
+        usersRepository.save(model.getUser());
     }
 }

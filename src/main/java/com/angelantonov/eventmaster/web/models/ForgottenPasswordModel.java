@@ -1,5 +1,4 @@
-package com.angelantonov.eventmaster.services.model;
-
+package com.angelantonov.eventmaster.web.models;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RefreshPasswordForUserServiceModel {
+public class ForgottenPasswordModel {
     private String email;
 }
