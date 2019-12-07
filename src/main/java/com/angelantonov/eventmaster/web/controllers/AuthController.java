@@ -1,10 +1,10 @@
 package com.angelantonov.eventmaster.web.controllers;
 
 import com.angelantonov.eventmaster.data.models.Role;
-import com.angelantonov.eventmaster.services.model.LoginResultServiceModel;
-import com.angelantonov.eventmaster.services.model.LoginServiceModel;
-import com.angelantonov.eventmaster.services.model.RefreshPasswordForUserServiceModel;
-import com.angelantonov.eventmaster.services.model.RegisterUserWithRolesServiceModel;
+import com.angelantonov.eventmaster.services.model.auth.LoginResultServiceModel;
+import com.angelantonov.eventmaster.services.model.auth.LoginServiceModel;
+import com.angelantonov.eventmaster.services.model.auth.RefreshPasswordForUserServiceModel;
+import com.angelantonov.eventmaster.services.model.auth.RegisterUserWithRolesServiceModel;
 import com.angelantonov.eventmaster.services.services.AuthService;
 import com.angelantonov.eventmaster.web.models.ForgottenPasswordModel;
 import com.angelantonov.eventmaster.web.models.LoginUserModel;

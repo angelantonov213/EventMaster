@@ -3,7 +3,7 @@ package com.angelantonov.eventmaster.services.services.implementations;
 import com.angelantonov.eventmaster.data.models.User;
 import com.angelantonov.eventmaster.data.repositories.UsersRepository;
 import com.angelantonov.eventmaster.helpers.RandomStringUtil;
-import com.angelantonov.eventmaster.services.model.*;
+import com.angelantonov.eventmaster.services.model.auth.*;
 import com.angelantonov.eventmaster.services.services.AuthService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
