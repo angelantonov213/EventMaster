@@ -1,4 +1,4 @@
-package com.angelantonov.eventmaster.web.models;
+package com.angelantonov.eventmaster.web.models.auth;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

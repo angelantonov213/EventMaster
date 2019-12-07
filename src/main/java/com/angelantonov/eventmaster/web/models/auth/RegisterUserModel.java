@@ -1,4 +1,4 @@
-package com.angelantonov.eventmaster.web.models;
+package com.angelantonov.eventmaster.web.models.auth;
 
 import com.angelantonov.eventmaster.data.models.Role;
 import lombok.Getter;

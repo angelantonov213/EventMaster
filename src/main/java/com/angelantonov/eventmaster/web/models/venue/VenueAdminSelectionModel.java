@@ -1,4 +1,4 @@
-package com.angelantonov.eventmaster.web.models;
+package com.angelantonov.eventmaster.web.models.venue;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
