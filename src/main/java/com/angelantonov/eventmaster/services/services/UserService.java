@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface UserService {
     List<UsersForRoleServiceModel> getUsersForRole(Role role);
+    void addVenueForUser(long venueId, long userId);
+    void removeVenueForUser(long venueId, long userId);
 }

@@ -6,9 +6,11 @@ import com.angelantonov.eventmaster.data.models.Venue;
 import com.angelantonov.eventmaster.services.model.AllVenueServiceModel;
 import com.angelantonov.eventmaster.services.model.CreateVenueServiceModel;
 import com.angelantonov.eventmaster.services.model.VenueDetailsServiceModel;
+import com.angelantonov.eventmaster.services.model.venue.UpdateVenueServiceModel;
 import com.angelantonov.eventmaster.services.services.UserService;
 import com.angelantonov.eventmaster.services.services.VenueService;
 import com.angelantonov.eventmaster.web.models.venue.CreateVenueModel;
+import com.angelantonov.eventmaster.web.models.venue.UpdateVenueModel;
 import com.angelantonov.eventmaster.web.models.venue.VenueAdminSelectionModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -37,7 +39,7 @@ public class VenueController {
     public ModelAndView getCreateVenueForm(ModelAndView modelAndView) {
         List<VenueAdminSelectionModel> admins = userService.getUsersForRole(Role.ADMIN)
                 .stream()
-                .map(user -> new VenueAdminSelectionModel(user.getId(), user.getEmail()))
+                .map(user -> new VenueAdminSelectionModel(user.getId(), user.getEmail(), false))
                 .collect(Collectors.toList());
 
         modelAndView.setViewName("/venue/create");
@@ -75,17 +77,83 @@ public class VenueController {
         return modelAndView;
     }
 
-    @PostMapping("/create")
-    public String createVenue(@ModelAttribute("createVenueModel") CreateVenueModel createVenueModel) {
-        Venue venue = modelMapper.map(createVenueModel, Venue.class);
-        for (User admin: createVenueModel.getAdmins()) {
-            List<Venue> newVenues = admin.getVenues();
-            newVenues.add(venue);
-            admin.setVenues(newVenues);
+    @GetMapping("/update/{venueId}")
+    public ModelAndView getUpdateVenue(@PathVariable String venueId, ModelAndView modelAndView) {
+        Optional<VenueDetailsServiceModel> optionalVenue = venueService.getVenueById(Long.parseLong(venueId));
+
+        modelAndView.setViewName("/venue/update");
+
+        UpdateVenueModel updateVenueModel = new UpdateVenueModel();
+        modelAndView.addObject("updateVenueModel", updateVenueModel);
+
+        if (optionalVenue.isPresent()) {
+            VenueDetailsServiceModel venue = optionalVenue.get();
+
+            List<VenueAdminSelectionModel> admins = userService.getUsersForRole(Role.ADMIN)
+                    .stream()
+                    .map(
+                            user -> new VenueAdminSelectionModel(user.getId(), user.getEmail(), hasUserWithIdIn(venue.getAdmins(), user.getId()))
+                    )
+                    .collect(Collectors.toList());
+
+            modelAndView.addObject("adminUsers", admins);
+
+            modelAndView.addObject("venue", venue);
+
+            return modelAndView;
         }
 
-        venueService.createVenue(modelMapper.map(createVenueModel, CreateVenueServiceModel.class));
+        return modelAndView;
+    }
+
+    @PostMapping("/create")
+    public String createVenue(@ModelAttribute("createVenueModel") CreateVenueModel createVenueModel) {
+        updateAdmins(createVenueModel);
+
+        long venueId = venueService.createVenue(modelMapper.map(createVenueModel, CreateVenueServiceModel.class));
+
+        for (User admin: createVenueModel.getAdmins()) {
+            userService.addVenueForUser(venueId, admin.getId());
+        }
 
         return "redirect:/venues/create";
+    }
+
+    @PostMapping("/update")
+    public String updateVenue(@ModelAttribute("updateVenueModel") UpdateVenueModel updateVenueModel) {
+        VenueDetailsServiceModel venue = venueService.getVenueById(updateVenueModel.getId()).get();
+
+        for (User oldAdmin: venue.getAdmins()) {
+            if (updateVenueModel.getAdmins().contains(oldAdmin) == false) {
+                userService.removeVenueForUser(updateVenueModel.getId(), oldAdmin.getId());
+            }
+        }
+
+        for(User user: updateVenueModel.getAdmins()) {
+            userService.addVenueForUser(updateVenueModel.getId(), user.getId());
+        }
+
+        venueService.updateVenue(modelMapper.map(updateVenueModel, UpdateVenueServiceModel.class));
+
+        return "redirect:/venues/all";
+    }
+
+    private void updateAdmins(CreateVenueModel venueModel) {
+        Venue venue = modelMapper.map(venueModel, Venue.class);
+        venue.setAdmins(List.of());
+        for (User admin: venueModel.getAdmins()) {
+            List<Venue> newVenues = admin.getVenues();
+            newVenues.add(venue);
+        }
+    }
+
+    private boolean hasUserWithIdIn(List<User> users, Long id) {
+        for (User user: users) {
+            if (user.getId() == id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Update Venue</title>
+</head>
+<body>
+<form th:action="@{/venues/update}" method="post" th:object="${updateVenueModel}">
+    <input th:hidden="true" type="text" th:name="id" th:value="${venue.id}"></input>
+    <label>Name</label>
+    <input type="text" id="name" name="name" th:value="${venue.name}"/>
+    <label>Description</label>
+    <input type="text" id="description" name="description" th:value="${venue.description}" />
+    <label>Address</label>
+    <input type="text" id="address" name="address" th:value="${venue.address}" />
+    <label>Capacity</label>
+    <input type="text" id="capacity" name="capacity" th:value="${venue.capacity}" />
+    <label>Admins</label>
+    <select name="admins" multiple="multiple">
+        <option th:each="user : ${adminUsers}"
+                th:value="${{user.id}}"
+                th:text="${{user.email}}"
+                th:selected="(${user.preselected})"
+        />
+    </select>
+    <br />
+
+    <button type="submit">Update</button>
+</form>
+</body>
+</html>

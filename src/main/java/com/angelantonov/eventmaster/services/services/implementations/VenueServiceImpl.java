@@ -5,11 +5,11 @@ import com.angelantonov.eventmaster.data.repositories.VenuesRepository;
 import com.angelantonov.eventmaster.services.model.AllVenueServiceModel;
 import com.angelantonov.eventmaster.services.model.CreateVenueServiceModel;
 import com.angelantonov.eventmaster.services.model.VenueDetailsServiceModel;
+import com.angelantonov.eventmaster.services.model.venue.UpdateVenueServiceModel;
 import com.angelantonov.eventmaster.services.services.VenueService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,8 +25,9 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
-    public void createVenue(CreateVenueServiceModel model) {
-        venuesRepository.save(modelMapper.map(model, Venue.class));
+    public long createVenue(CreateVenueServiceModel model) {
+        Venue venue = venuesRepository.save(modelMapper.map(model, Venue.class));
+        return venue.getId();
     }
 
     @Override
@@ -46,5 +47,12 @@ public class VenueServiceImpl implements VenueService {
         }
 
         return Optional.of(modelMapper.map(optionalVenue.get(), VenueDetailsServiceModel.class));
+    }
+
+    @Override
+    public void updateVenue(UpdateVenueServiceModel model) {
+        Venue venue = modelMapper.map(model, Venue.class);
+        venue.setEvents(List.of());
+        venuesRepository.save(venue);
     }
 }

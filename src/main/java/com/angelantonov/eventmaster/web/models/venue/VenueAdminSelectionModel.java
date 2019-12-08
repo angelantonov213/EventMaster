@@ -10,4 +10,5 @@ import lombok.Setter;
 public class VenueAdminSelectionModel {
     private long id;
     private String email;
+    private boolean preselected;
 }

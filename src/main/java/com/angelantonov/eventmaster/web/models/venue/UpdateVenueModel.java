@@ -10,8 +10,9 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreateVenueModel {
+public class UpdateVenueModel {
     private List<User> admins;
+    private long id;
     private String address;
     private int capacity;
     private String name;
