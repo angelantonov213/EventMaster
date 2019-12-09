@@ -1,5 +1,6 @@
 package com.angelantonov.eventmaster.services.services;
 
+import com.angelantonov.eventmaster.data.models.User;
 import com.angelantonov.eventmaster.services.model.AllVenueServiceModel;
 import com.angelantonov.eventmaster.services.model.CreateVenueServiceModel;
 import com.angelantonov.eventmaster.services.model.VenueDetailsServiceModel;
@@ -12,5 +13,8 @@ public interface VenueService {
     long createVenue(CreateVenueServiceModel model);
     List<AllVenueServiceModel> getAllVenues();
     Optional<VenueDetailsServiceModel> getVenueById(long id);
+    List<AllVenueServiceModel> getVenuesForUser(User user);
     void updateVenue(UpdateVenueServiceModel model);
+
+    void addEventForVenue(long eventId, long venueId);
 }

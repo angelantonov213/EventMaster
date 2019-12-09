@@ -124,7 +124,7 @@ public class VenueController {
         VenueDetailsServiceModel venue = venueService.getVenueById(updateVenueModel.getId()).get();
 
         for (User oldAdmin: venue.getAdmins()) {
-            if (updateVenueModel.getAdmins().contains(oldAdmin) == false) {
+            if (!updateVenueModel.getAdmins().contains(oldAdmin)) {
                 userService.removeVenueForUser(updateVenueModel.getId(), oldAdmin.getId());
             }
         }

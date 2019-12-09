@@ -1,6 +1,9 @@
 package com.angelantonov.eventmaster.services.services.implementations;
 
+import com.angelantonov.eventmaster.data.models.Event;
+import com.angelantonov.eventmaster.data.models.User;
 import com.angelantonov.eventmaster.data.models.Venue;
+import com.angelantonov.eventmaster.data.repositories.EventsRepository;
 import com.angelantonov.eventmaster.data.repositories.VenuesRepository;
 import com.angelantonov.eventmaster.services.model.AllVenueServiceModel;
 import com.angelantonov.eventmaster.services.model.CreateVenueServiceModel;
@@ -18,10 +21,12 @@ import java.util.stream.Collectors;
 public class VenueServiceImpl implements VenueService {
     private final VenuesRepository venuesRepository;
     private final ModelMapper modelMapper;
+    private final EventsRepository eventsRepository;
 
-    public VenueServiceImpl(VenuesRepository venuesRepository, ModelMapper modelMapper) {
+    public VenueServiceImpl(VenuesRepository venuesRepository, ModelMapper modelMapper, EventsRepository eventsRepository) {
         this.venuesRepository = venuesRepository;
         this.modelMapper = modelMapper;
+        this.eventsRepository = eventsRepository;
     }
 
     @Override
@@ -50,9 +55,30 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
+    public List<AllVenueServiceModel> getVenuesForUser(User user) {
+        return venuesRepository.findAllByAdminsContains(user)
+                .stream()
+                .map(venue -> modelMapper.map(venue, AllVenueServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void updateVenue(UpdateVenueServiceModel model) {
         Venue venue = modelMapper.map(model, Venue.class);
         venue.setEvents(List.of());
         venuesRepository.save(venue);
+    }
+
+    @Override
+    public void addEventForVenue(long eventId, long venueId) {
+        List<Event> venuesEvents = venuesRepository.findById(venueId).get().getEvents();
+        Event eventToAdd = eventsRepository.findById(eventId).get();
+
+        if (!venuesEvents.contains((eventToAdd))) {
+            venuesEvents.add(eventToAdd);
+            Venue venue = venuesRepository.findById(venueId).get();
+            venue.setEvents(venuesEvents);
+            venuesRepository.save(venue);
+        }
     }
 }

@@ -1,15 +1,18 @@
 package com.angelantonov.eventmaster.services.services.implementations;
 
 import com.angelantonov.eventmaster.data.models.Role;
+import com.angelantonov.eventmaster.data.models.User;
 import com.angelantonov.eventmaster.data.models.Venue;
 import com.angelantonov.eventmaster.data.repositories.UsersRepository;
 import com.angelantonov.eventmaster.data.repositories.VenuesRepository;
+import com.angelantonov.eventmaster.services.model.UserServiceModel;
 import com.angelantonov.eventmaster.services.model.UsersForRoleServiceModel;
 import com.angelantonov.eventmaster.services.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +42,9 @@ public class UserServiceImpl implements UserService {
 
         if (usersVenues.contains(venueToAdd) == false) {
             usersVenues.add(venueToAdd);
-            usersRepository.findById(userId).get().setVenues(usersVenues);
+            User user = usersRepository.findById(userId).get();
+            user.setVenues(usersVenues);
+            usersRepository.save(user);
         }
     }
 
@@ -50,7 +55,20 @@ public class UserServiceImpl implements UserService {
 
         if (usersVenues.contains(venueToAdd)) {
             usersVenues.remove(venueToAdd);
-            usersRepository.findById(userId).get().setVenues(usersVenues);
+            User user = usersRepository.findById(userId).get();
+            user.setVenues(usersVenues);
+            usersRepository.save(user);
         }
+    }
+
+    @Override
+    public Optional<UserServiceModel> getUserById(long userId) {
+        Optional<User> optionalUser = usersRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+
+        return Optional.of(modelMapper.map(optionalUser.get(), UserServiceModel.class));
     }
 }
