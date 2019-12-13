@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Update Event</title>
+</head>
+<body>
+<form th:action="@{/events/update}" method="post" th:object="${updateEventModel}">
+    <input th:hidden="true" type="text" th:name="id" th:value="${event.id}"></input>
+    <label>Name</label>
+    <input type="text" id="name" name="name" th:value="${event.name}"/>
+    <label>Description</label>
+    <input type="text" id="description" name="description" th:value="${event.description}" />
+    <label>Date</label>
+    <input type="text" id="date" name="date" th:value="${event.date}" />
+    <label>Price</label>
+    <input type="number" id="price" name="price" th:value="${event.price}" />
+    <label>Venue</label>
+    <select name="venueId">
+        <option th:each="venue : ${venues}"
+                th:value="${{venue.id}}"
+                th:text="${{venue.name}}" />
+    </select>
+    <br />
+
+    <button type="submit">Update</button>
+</form>
+</body>
+</html>

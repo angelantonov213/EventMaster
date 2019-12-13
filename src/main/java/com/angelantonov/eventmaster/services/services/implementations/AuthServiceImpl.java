@@ -24,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
     public void registerUserWithRoles(RegisterUserWithRolesServiceModel model) {
         // TODO: Add validation
         User user = modelMapper.map(model, User.class);
-        // TODO: Add pass hasing
+        // TODO: Add pass hashing
 
         usersRepository.save(user);
     }

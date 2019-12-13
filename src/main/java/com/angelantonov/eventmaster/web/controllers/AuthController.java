@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
     private final ModelMapper modelMapper;
@@ -57,7 +57,7 @@ public class AuthController {
             return "redirect:/home";
         }
 
-        return "redirect:/users/login";
+        return "redirect:/auth/login";
     }
 
     @PostMapping("register")
@@ -65,7 +65,7 @@ public class AuthController {
         model.setRoles(List.of(Role.USER));
         authService.registerUserWithRoles(modelMapper.map(model, RegisterUserWithRolesServiceModel.class));
 
-        return "redirect:/users/login";
+        return "redirect:/auth/login";
     }
 
     @PostMapping("registerAdmin")
@@ -75,7 +75,7 @@ public class AuthController {
         model.setRoles(List.of(Role.USER, Role.ADMIN));
         authService.registerUserWithRoles(modelMapper.map(model, RegisterUserWithRolesServiceModel.class));
 
-        return "redirect:/users/login";
+        return "redirect:/auth/login";
     }
 
     @PostMapping("forgottenPassword")

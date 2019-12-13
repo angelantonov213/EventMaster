@@ -4,6 +4,7 @@ import com.angelantonov.eventmaster.data.models.Event;
 import com.angelantonov.eventmaster.data.models.User;
 import com.angelantonov.eventmaster.data.models.Venue;
 import com.angelantonov.eventmaster.data.repositories.EventsRepository;
+import com.angelantonov.eventmaster.data.repositories.UsersRepository;
 import com.angelantonov.eventmaster.data.repositories.VenuesRepository;
 import com.angelantonov.eventmaster.services.model.AllVenueServiceModel;
 import com.angelantonov.eventmaster.services.model.CreateVenueServiceModel;
@@ -22,11 +23,13 @@ public class VenueServiceImpl implements VenueService {
     private final VenuesRepository venuesRepository;
     private final ModelMapper modelMapper;
     private final EventsRepository eventsRepository;
+    private final UsersRepository usersRepository;
 
-    public VenueServiceImpl(VenuesRepository venuesRepository, ModelMapper modelMapper, EventsRepository eventsRepository) {
+    public VenueServiceImpl(VenuesRepository venuesRepository, ModelMapper modelMapper, EventsRepository eventsRepository, UsersRepository usersRepository) {
         this.venuesRepository = venuesRepository;
         this.modelMapper = modelMapper;
         this.eventsRepository = eventsRepository;
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -55,8 +58,14 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
-    public List<AllVenueServiceModel> getVenuesForUser(User user) {
-        return venuesRepository.findAllByAdminsContains(user)
+    public List<AllVenueServiceModel> getVenuesForUser(long userId) {
+        Optional<User> optionalUser = usersRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            return List.of();
+        }
+
+        return venuesRepository.findAllByAdminsContains(optionalUser.get())
                 .stream()
                 .map(venue -> modelMapper.map(venue, AllVenueServiceModel.class))
                 .collect(Collectors.toList());
