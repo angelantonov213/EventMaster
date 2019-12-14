@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+        lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+>
 <head>
     <meta charset="UTF-8">
     <title>All Events here</title>
 </head>
 <body>
-
+<div th:each="event: ${allEvents}" >
+    <a th:href="@{'/events/' + ${event.id}}" th:text="${event.name}"></a>
+    <span th:text="${event.description}"></span>
+    <span th:text="${event.price}"></span>
+    <a th:href="@{'/venues/' + ${event.venueId}}" th:text="${event.venueName}"></a>
+    <span th:text="${event.date}"></span>
+</div>
 </body>
 </html>

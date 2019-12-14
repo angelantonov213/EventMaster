@@ -1,8 +1,9 @@
 package com.angelantonov.eventmaster.web.controllers;
 
-import com.angelantonov.eventmaster.services.model.AllVenueServiceModel;
-import com.angelantonov.eventmaster.services.model.CreateEventServiceModel;
-import com.angelantonov.eventmaster.services.model.EventDetailsServiceModel;
+import com.angelantonov.eventmaster.services.model.event.EventAllServiceModel;
+import com.angelantonov.eventmaster.services.model.venue.AllVenueServiceModel;
+import com.angelantonov.eventmaster.services.model.event.CreateEventServiceModel;
+import com.angelantonov.eventmaster.services.model.event.EventDetailsServiceModel;
 import com.angelantonov.eventmaster.services.services.EventService;
 import com.angelantonov.eventmaster.services.services.UserService;
 import com.angelantonov.eventmaster.services.services.VenueService;
@@ -33,8 +34,20 @@ public class EventController {
     }
 
     @GetMapping("/all")
-    public String getAllEvents() {
-        return "/event/all";
+    public ModelAndView getAllEvents(ModelAndView modelAndView) {
+        return setupEventsAllModelAndViewFrom(eventService.getAllEvents(), modelAndView);
+    }
+
+    @GetMapping("/all/{searchText}")
+    public ModelAndView getAllEventsByName(@PathVariable String searchText, ModelAndView modelAndView) {
+        return setupEventsAllModelAndViewFrom(eventService.getAllEventsThatContainStringInNameOrDescription(searchText), modelAndView);
+    }
+
+    private ModelAndView setupEventsAllModelAndViewFrom(List<EventAllServiceModel> events, ModelAndView modelAndView) {
+        modelAndView.addObject("allEvents", events);
+        modelAndView.setViewName("/event/all");
+
+        return modelAndView;
     }
 
     @GetMapping("/create")
@@ -110,9 +123,7 @@ public class EventController {
             return "redirect:/events/" + updateEventModel.getId();
         }
 
-        EventDetailsServiceModel event = optionalEvent.get();
-
-        eventService.updateEvent(event);
+        eventService.updateEvent(modelMapper.map(updateEventModel, EventDetailsServiceModel.class));
 
         return "redirect:/events/all";
     }

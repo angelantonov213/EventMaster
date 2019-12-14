@@ -3,13 +3,16 @@ package com.angelantonov.eventmaster.services.services.implementations;
 import com.angelantonov.eventmaster.data.models.Event;
 import com.angelantonov.eventmaster.data.repositories.EventsRepository;
 import com.angelantonov.eventmaster.data.repositories.TicketsRepository;
-import com.angelantonov.eventmaster.services.model.CreateEventServiceModel;
-import com.angelantonov.eventmaster.services.model.EventDetailsServiceModel;
+import com.angelantonov.eventmaster.services.model.event.CreateEventServiceModel;
+import com.angelantonov.eventmaster.services.model.event.EventAllServiceModel;
+import com.angelantonov.eventmaster.services.model.event.EventDetailsServiceModel;
 import com.angelantonov.eventmaster.services.services.EventService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -26,6 +29,14 @@ public class EventServiceImpl implements EventService {
     @Override
     public long createEvent(CreateEventServiceModel model) {
         return eventsRepository.save(modelMapper.map(model, Event.class)).getId();
+    }
+
+    @Override
+    public void updateEvent(EventDetailsServiceModel eventModel) {
+        Event event = modelMapper.map(eventModel, Event.class);
+        event.setTickets(ticketsRepository.getTicketsByEvent_Id(event.getId()));
+
+        eventsRepository.save(event);
     }
 
     @Override
@@ -50,10 +61,30 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void updateEvent(EventDetailsServiceModel eventModel) {
-        Event event = modelMapper.map(eventModel, Event.class);
-        event.setTickets(ticketsRepository.getTicketsByEvent_Id(event.getId()));
+    public List<EventAllServiceModel> getAllEvents() {
+        List<Event> allEvents = eventsRepository.findAll();
+        return allEvents.stream()
+                .map(event -> {
+                        EventAllServiceModel mapped = modelMapper.map(event, EventAllServiceModel.class);
+                        mapped.setVenueId(event.getVenue().getId());
+                        mapped.setVenueName(event.getVenue().getName());
 
-        eventsRepository.save(event);
+                        return mapped;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EventAllServiceModel> getAllEventsThatContainStringInNameOrDescription(String searchText) {
+        List<Event> allEvents = eventsRepository.findEventByNameContainingOrDescriptionContaining(searchText, searchText);
+        return allEvents.stream()
+                .map(event -> {
+                    EventAllServiceModel mapped = modelMapper.map(event, EventAllServiceModel.class);
+                    mapped.setVenueId(event.getVenue().getId());
+                    mapped.setVenueName(event.getVenue().getName());
+
+                    return mapped;
+                })
+                .collect(Collectors.toList());
     }
 }

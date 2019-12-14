@@ -1,4 +1,4 @@
-package com.angelantonov.eventmaster.services.model;
+package com.angelantonov.eventmaster.services.model.venue;
 
 import com.angelantonov.eventmaster.data.models.Event;
 import com.angelantonov.eventmaster.data.models.User;
@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AllVenueServiceModel {
+public class VenueDetailsServiceModel {
     private long id;
     private String name;
     private String address;
@@ -19,5 +19,4 @@ public class AllVenueServiceModel {
     private int capacity;
     private List<User> admins;
     private List<Event> events;
-
 }

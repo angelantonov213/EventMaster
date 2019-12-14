@@ -1,4 +1,4 @@
-package com.angelantonov.eventmaster.services.model;
+package com.angelantonov.eventmaster.services.model.event;
 
 import com.angelantonov.eventmaster.data.models.Ticket;
 import lombok.Getter;

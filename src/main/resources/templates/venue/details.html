@@ -11,5 +11,12 @@
 <body>
     <div th:text="${venue.name}"></div>
     <div th:text="${venue.capacity}"></div>
+    <div>Events</div>
+    <div th:each="event: ${venue.events}" >
+        <a th:href="@{'/events/' + ${event.id}}" th:text="${event.name}"></a>
+        <span th:text="${event.description}"></span>
+        <span th:text="${event.price}"></span>
+        <span th:text="${event.date}"></span>
+    </div>
 </body>
 </html>
