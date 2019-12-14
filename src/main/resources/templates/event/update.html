@@ -10,7 +10,7 @@
 </head>
 <body>
 <form th:action="@{/events/update}" method="post" th:object="${updateEventModel}">
-    <input th:hidden="true" type="text" th:name="id" th:value="${event.id}"></input>
+    <input th:hidden="true" type="text" th:name="id" th:value="${event.id}" />
     <label>Name</label>
     <input type="text" id="name" name="name" th:value="${event.name}"/>
     <label>Description</label>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Buy ticket</title>
+</head>
+<body>
+
+<form th:action="@{/tickets/buy}" method="post" th:object="${buyTicketModel}">
+    <input th:value="${event.id}" type="text" th:name="eventId" th:hidden="true" />
+<!--    TODO User id -->
+    <input th:value="2" th:name="userId" type="text" th:hidden="true" />
+    <label th:text="${event.name}"></label>
+    <label th:text="${event.price}"></label>
+    <label th:text="${event.venueName}"></label>
+    <br />
+
+    <button type="submit">Buy</button>
+</form>
+</body>
+</html>

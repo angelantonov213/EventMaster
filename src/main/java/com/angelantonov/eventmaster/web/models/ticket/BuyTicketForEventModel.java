@@ -1,0 +1,15 @@
+package com.angelantonov.eventmaster.web.models.ticket;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class BuyTicketForEventModel {
+    private long id;
+    private String name;
+    private double price;
+    private String venueName;
+}

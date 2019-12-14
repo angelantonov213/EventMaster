@@ -16,7 +16,15 @@
     <div th:text="${event.price}"></div>
     <a th:href="@{'/venues/' + ${event.venueId}}"><span th:text="${event.venueName}"></span></a>
     <div th:text="${event.description}"></div>
-    <div th:text="${event.ticketsSold}"></div>
-    <div th:text="${event.venueCapacity}"></div>
+    <div>
+    Sold: <span th:text="${event.ticketsSold}"></span> <br />
+    Capacity: <span th:text="${event.venueCapacity}"></span>
+    </div>
+    <th:block th:if="${event.ticketsSold >= event.venueCapacity}">
+        Sold out!
+    </th:block>
+    <th:block th:unless="${event.ticketsSold >= event.venueCapacity}">
+        <a th:href="@{'/tickets/buy/' + ${event.id}}">Buy ticket!</a>
+    </th:block>
 </body>
 </html>
